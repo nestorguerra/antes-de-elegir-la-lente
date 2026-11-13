@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020b1f">
+<title>Antes de elegir la lente</title>
+<style>
+:root{
+  /* Un solo mundo visual: azul profundo + cristal esmerilado + texto blanco de alto contraste.
+     Layout: título grande por vista, contenido en tarjetas de cristal, barra de pestañas inferior. */
+  --bg:#020b1f;
+  --glass:rgba(24,56,128,.40);
+  --glass-strong:rgba(10,30,78,.78);
+  --line:rgba(190,215,255,.24);
+  --ink:#ffffff;
+  --ink-2:#d3e1fb;
+  --accent:#74bdff;
+  --sel-bg:#eef5ff;
+  --sel-ink:#03214f;
+  --warn:#ffd35f;
+  --ok:#62e59c;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --r:22px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:17px;
+  line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+/* Fondo: manchas de luz azul detrás del cristal */
+.backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:radial-gradient(120% 80% at 50% -10%,#0b2f74 0%,#041438 55%,#020b1f 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75}
+.b1{width:340px;height:340px;left:-90px;top:90px;background:#0f56d9}
+.b2{width:300px;height:300px;right:-110px;top:380px;background:#1a3fae}
+.b3{width:260px;height:260px;left:30%;bottom:-80px;background:#0a7bd6;opacity:.5}
+
+.app{position:relative;z-index:1;max-width:560px;margin:0 auto;min-height:100%;
+  padding:calc(env(safe-area-inset-top) + 14px) max(16px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 104px) max(16px,env(safe-area-inset-left));
+  display:flex;flex-direction:column;gap:16px}
+
+header{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.appname{font-size:15px;font-weight:600;color:var(--ink-2);letter-spacing:.01em}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;
+  padding:5px 10px;border-radius:999px;background:rgba(255,211,95,.14);color:var(--warn);border:1px solid rgba(255,211,95,.35)}
+h1{font-size:34px;line-height:1.1;font-weight:700;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--ink-2);font-size:15px;max-width:60ch}
+.patient{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.patient label{font-size:13px;color:var(--ink-2);font-weight:600}
+.patient input{width:9.5em}
+
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);
+  -webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);
+  box-shadow:0 10px 30px rgba(0,6,24,.35), inset 0 1px 0 rgba(255,255,255,.08)}
+.section-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin:6px 4px -6px}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* Prioridades */
+.prio{padding:16px;display:flex;flex-direction:column;gap:12px;border:0;margin:0;min-width:0}
+.prio legend{padding:0;float:left;width:100%}
+.prio .t{font-size:17px;font-weight:650;display:block}
+.prio .h{font-size:14px;color:var(--ink-2);display:block;margin-top:2px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border-radius:14px;
+  background:rgba(0,10,40,.45);border:1px solid var(--line);clear:both}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{display:flex;align-items:center;justify-content:center;text-align:center;min-height:40px;padding:6px 4px;
+  border-radius:10px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:background .15s,color .15s}
+.seg input:checked + label{background:var(--sel-bg);color:var(--sel-ink);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.seg input:focus-visible + label{outline:3px solid var(--accent);outline-offset:2px}
+.seg input[value=""]:checked + label{background:rgba(255,255,255,.18);color:var(--ink)}
+
+textarea,input[type=text]{font:inherit;color:var(--ink);background:rgba(0,10,40,.5);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px}
+textarea{width:100%;min-height:96px;resize:vertical;font-size:16px;line-height:1.45}
+textarea::placeholder,input::placeholder{color:rgba(211,225,251,.6)}
+textarea:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card-pad{padding:16px;display:flex;flex-direction:column;gap:10px}
+.card-pad > label{font-weight:650}
+.help{font-size:13.5px;color:var(--ink-2);margin:0}
+
+/* Mediciones */
+.eye-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:16px;
+  background:var(--glass-strong);border:1px solid var(--line)}
+.eye-switch button{font:inherit;font-size:15px;font-weight:650;border:0;border-radius:12px;min-height:44px;cursor:pointer;
+  background:transparent;color:var(--ink)}
+.eye-switch button[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-ink)}
+.list{padding:2px 0;overflow:hidden}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 16px;min-height:56px}
+.row + .row{border-top:1px solid var(--line)}
+.row .name{display:flex;flex-direction:column;min-width:0}
+.row .name label{font-weight:600;font-size:16px}
+.row .name small{font-size:13px;color:var(--ink-2)}
+.row .val{display:flex;align-items:center;gap:6px}
+.row .val input{width:7.2em;text-align:right;font-variant-numeric:tabular-nums;font-size:17px}
+.row .unit{font-size:14px;color:var(--ink-2);min-width:3.6em}
+.row.empty .val input{border-color:rgba(255,211,95,.6);border-style:dashed}
+.row .flag{grid-column:1 / -1;font-size:13px;color:var(--warn);margin-top:-4px}
+.fict-tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--sel-ink);background:var(--accent);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+
+/* Revisión */
+.status{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.big{font-size:52px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.big.zero{color:var(--ok)} .big.some{color:var(--warn)}
+.status .what{font-weight:650}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:8px}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,#8fd0ff,#ffffff);border-radius:99px;transition:width .3s}
+.meta{font-size:13.5px;color:var(--ink-2);margin-top:6px;font-variant-numeric:tabular-nums}
+.pending{list-style:none;margin:0;padding:0}
+.pending li + li{border-top:1px solid var(--line)}
+.pending button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:10px 1fr auto;gap:12px;align-items:center;
+  width:100%;padding:12px 16px;min-height:52px;cursor:pointer}
+.pending button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px;border-radius:var(--r)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--warn)}
+.pending .where{font-size:13px;color:var(--ink-2)}
+.go{font-size:14px;font-weight:650;color:var(--accent)}
+.done-msg{padding:16px;color:var(--ok);font-weight:600}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px}
+th,td{padding:10px 14px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+tbody tr{border-top:1px solid var(--line)}
+td.miss{color:var(--warn)}
+.summary{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;min-height:260px;white-space:pre}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-size:16px;font-weight:650;border-radius:14px;min-height:48px;padding:0 18px;cursor:pointer;border:1px solid transparent}
+.btn.primary{background:var(--sel-bg);color:var(--sel-ink)}
+.btn.ghost{background:rgba(255,255,255,.08);color:var(--ink);border-color:var(--line)}
+.btn.armed{background:rgba(255,211,95,.18);color:var(--warn);border-color:rgba(255,211,95,.5)}
+.copy-status{font-size:14px;color:var(--ink-2);min-height:1.4em}
+.disclaimer{font-size:13px;color:var(--ink-2);padding:0 4px;margin:4px 0 0}
+
+/* Barra de pestañas */
+nav.tabs{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);
+  width:min(528px,calc(100% - 24px));display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px;border-radius:26px;
+  background:var(--glass-strong);border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);box-shadow:0 12px 34px rgba(0,4,20,.55)}
+nav.tabs a{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:20px;
+  color:var(--ink-2);text-decoration:none;font-size:12px;font-weight:650}
+nav.tabs a svg{width:24px;height:24px}
+nav.tabs a[aria-current="page"]{background:var(--sel-bg);color:var(--sel-ink)}
+.badge{position:absolute;top:3px;right:calc(50% - 26px);min-width:20px;height:20px;padding:0 6px;border-radius:10px;
+  background:var(--warn);color:#2a1d00;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.badge[hidden]{display:none}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (max-width:360px){h1{font-size:30px}.seg label{font-size:13px}.row .val input{width:6em}}
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="app">
+  <header>
+    <div class="topline">
+      <span class="appname">Antes de elegir la lente</span>
+      <span class="pill" title="Todos los datos son inventados">Datos 100 % sintéticos</span>
+    </div>
+    <p style="font-size:13px;color:#d3e1fb;margin:12px 0">Demostración educativa. No introduzca datos reales. No utilizar para decisiones clínicas. Los cambios se borran al recargar.</p>
+    <a href="#" onclick="event.preventDefault(); alert('Ya está utilizando la versión descargable. Guarde este archivo para abrirlo sin conexión.')" style="display:inline-block;padding:9px 14px;border:1px solid #74bdff;border-radius:12px;color:#fff;text-decoration:none;font-size:14px">Descargar aplicación HTML</a>
+    <h1 id="viewTitle">Prioridades visuales</h1>
+    <p class="lead" id="viewLead"></p>
+    <div class="patient">
+      <label for="patientId">Paciente sintético</label>
+      <input type="text" id="patientId" autocomplete="off" spellcheck="false">
+    </div>
+  </header>
+
+  <!-- Vista 1 -->
+  <main class="view stack" id="view-prioridades" aria-labelledby="viewTitle">
+    <p class="section-title">¿Cuánto le importa a la persona…?</p>
+    <div class="stack" id="prioList"></div>
+    <div class="glass card-pad">
+      <label for="words">En sus propias palabras</label>
+      <textarea id="words" placeholder="Qué quiere poder hacer sin esfuerzo después de la cirugía"></textarea>
+      <p class="help">Recoge la frase tal como la dice. La app no interpreta este texto.</p>
+    </div>
+  </main>
+
+  <!-- Vista 2 -->
+  <main class="view stack" id="view-mediciones" aria-labelledby="viewTitle" hidden>
+    <div class="eye-switch" role="group" aria-label="Ojo">
+      <button type="button" id="eye-od" data-eye="od" aria-pressed="true">OD · derecho</button>
+      <button type="button" id="eye-oi" data-eye="oi" aria-pressed="false">OI · izquierdo</button>
+    </div>
+    <div id="eyePanels"></div>
+    <p class="disclaimer">Solo se comprueba que los números tengan formato numérico. No hay rangos, alertas clínicas ni cálculos de potencia.</p>
+  </main>
+
+  <!-- Vista 3 -->
+  <main class="view stack" id="view-revision" aria-labelledby="viewTitle" hidden>
+    <div class="glass status">
+      <div class="big" id="pendCount">0</div>
+      <div>
+        <div class="what" id="pendLabel">pendientes</div>
+        <div class="bar" aria-hidden="true"><span id="progBar" style="width:0%"></span></div>
+        <div class="meta" id="progMeta"></div>
+      </div>
+    </div>
+
+    <p class="section-title">Pendientes</p>
+    <div class="glass list" id="pendBox"></div>
+
+    <p class="section-title">Mediciones por ojo</p>
+    <div class="glass table-wrap" id="tableBox"></div>
+
+    <div class="glass card-pad">
+      <label for="reviewNote">Nota de revisión</label>
+      <textarea id="reviewNote" placeholder="Por ejemplo: campos ficticios vacíos a propósito; repetir agudeza visual en OI"></textarea>
+    </div>
+
+    <p class="section-title">Resumen copiable</p>
+    <div class="glass card-pad">
+      <label class="sr" for="summary">Resumen en texto plano</label>
+      <textarea id="summary" class="summary" readonly></textarea>
+      <div class="actions">
+        <button type="button" class="btn primary" id="copyBtn">Copiar resumen</button>
+        <button type="button" class="btn ghost" id="resetBtn">Restablecer ejemplo</button>
+      </div>
+      <div class="copy-status" id="copyStatus" role="status" aria-live="polite"></div>
+    </div>
+    <p class="disclaimer">Esta app ordena información para una conversación. No elige lentes ni aplica umbrales de decisión.</p>
+  </main>
+</div>
+
+<nav class="tabs" aria-label="Secciones">
+  <a href="#prioridades" data-view="prioridades">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+    Prioridades
+  </a>
+  <a href="#mediciones" data-view="mediciones">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    Mediciones
+  </a>
+  <a href="#revision" data-view="revision">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L6.8 5M3.5 12l1.2 1.2 2.1-2.2"/><circle cx="5" cy="18" r="1.4"/></svg>
+    Revisión
+    <span class="badge" id="tabBadge" hidden>0</span>
+  </a>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Modelo ---------- */
+  var PRIORITIES = [
+    {id:"lejos",      t:"Visión de lejos",          h:"Conducir de día, ver la tele, caminar por la calle"},
+    {id:"intermedia", t:"Distancia intermedia",      h:"Ordenador, salpicadero, cocinar"},
+    {id:"cerca",      t:"Visión de cerca",           h:"Leer, móvil, coser, partituras"},
+    {id:"noche",      t:"Actividad nocturna",        h:"Conducir o moverse con poca luz"},
+    {id:"gafas",      t:"No depender de gafas",      h:"Cuánto le importa prescindir de ellas"},
+    {id:"precision",  t:"Aficiones de precisión",    h:"Música, manualidades, modelismo"}
+  ];
+  var LEVELS = [{v:"",t:"Sin dato"},{v:"poca",t:"Poca"},{v:"media",t:"Media"},{v:"mucha",t:"Mucha"}];
+  var LEVEL_TXT = {"":"sin valorar",poca:"Poca",media:"Media",mucha:"Mucha"};
+
+  var FIELDS = [
+    {id:"al",    t:"Longitud axial",                 u:"mm",  num:true},
+    {id:"k1",    t:"K1",                             u:"D",   num:true},
+    {id:"k2",    t:"K2",                             u:"D",   num:true},
+    {id:"ejeK1", t:"Eje de K1",                      u:"°",   num:true},
+    {id:"acd",   t:"Profundidad de cámara anterior", u:"mm",  num:true},
+    {id:"wtw",   t:"Blanco-blanco",                  u:"mm",  num:true},
+    {id:"av",    t:"Agudeza visual corregida",       u:"dec.",num:true},
+    {id:"fa",    t:"Campo ficticio A",               u:"",    num:false, fict:true},
+    {id:"fb",    t:"Campo ficticio B",               u:"",    num:false, fict:true}
+  ];
+  var EYES = {od:"OD · derecho", oi:"OI · izquierdo"};
+
+  /* Ejemplo 100 % sintético: ningún valor corresponde a una persona real. */
+  var SAMPLE = {
+    patient:"DEMO-0427",
+    priorities:{lejos:"mucha",intermedia:"media",cerca:"mucha",noche:"poca",gafas:"",precision:"media"},
+    words:"Quiere leer partituras sin cambiar de gafas a cada rato. Conduce poco de noche. (Texto sintético)",
+    eyes:{
+      od:{al:"23,41",k1:"43,25",k2:"44,10",ejeK1:"92", acd:"3,12",wtw:"11,8",av:"0,5",fa:"",fb:""},
+      oi:{al:"23,58",k1:"43,60",k2:"43,95",ejeK1:"178",acd:"3,05",wtw:"11,9",av:"",  fa:"",fb:""}
+    },
+    reviewNote:""
+  };
+
+  var state = clone(SAMPLE);
+  var currentEye = "od";
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  // Los cambios solo viven en memoria y desaparecen al recargar.
+  function save(){}
+
+  /* Solo formato: ¿se puede leer como número? Sin rangos ni umbrales. */
+  function isNumeric(s){ var t = String(s).trim().replace(",", "."); return t !== "" && /^[-+]?\d*\.?\d+$/.test(t); }
+
+  /* ---------- Pendientes ---------- */
+  function computePending(){
+    var list = [];
+    PRIORITIES.forEach(function(p){
+      if (!state.priorities[p.id]) list.push({kind:"prio", id:p.id, label:p.t, where:"Prioridad sin valorar"});
+    });
+    ["od","oi"].forEach(function(eye){
+      FIELDS.forEach(function(f){
+        var v = (state.eyes[eye][f.id] || "").trim();
+        if (!v) list.push({kind:"field", eye:eye, id:f.id, label:f.t, where:EYES[eye] + (f.fict ? " · campo ficticio vacío" : " · sin dato")});
+        else if (f.num && !isNumeric(v)) list.push({kind:"field", eye:eye, id:f.id, label:f.t, where:EYES[eye] + " · formato no numérico"});
+      });
+    });
+    return list;
+  }
+  function totalItems(){ return PRIORITIES.length + FIELDS.length * 2; }
+
+  /* ---------- Vista 1: prioridades ---------- */
+  function buildPriorities(){
+    var box = document.getElementById("prioList");
+    box.innerHTML = "";
+    PRIORITIES.forEach(function(p){
+      var fs = document.createElement("fieldset");
+      fs.className = "glass prio";
+      var lg = document.createElement("legend");
+      lg.innerHTML = '<span class="t"></span><span class="h"></span>';
+      lg.querySelector(".t").textContent = p.t;
+      lg.querySelector(".h").textContent = p.h;
+      fs.appendChild(lg);
+      var seg = document.createElement("div");
+      seg.className = "seg";
+      LEVELS.forEach(function(l){
+        var id = "p-" + p.id + "-" + (l.v || "nd");
+        var inp = document.createElement("input");
+        inp.type = "radio"; inp.name = "p-" + p.id; inp.id = id; inp.value = l.v;
+        inp.checked = (state.priorities[p.id] || "") === l.v;
+        inp.addEventListener("change", function(){ state.priorities[p.id] = l.v; changed(); });
+        var lab = document.createElement("label");
+        lab.htmlFor = id; lab.textContent = l.t;
+        seg.appendChild(inp); seg.appendChild(lab);
+      });
+      fs.appendChild(seg);
+      box.appendChild(fs);
+    });
+  }
+
+  /* ---------- Vista 2: mediciones ---------- */
+  function buildEyes(){
+    var host = document.getElementById("eyePanels");
+    host.innerHTML = "";
+    ["od","oi"].forEach(function(eye){
+      var wrap = document.createElement("div");
+      wrap.className = "stack";
+      wrap.id = "panel-" + eye;
+      wrap.hidden = eye !== currentEye;
+      wrap.setAttribute("role","region");
+      wrap.setAttribute("aria-label","Mediciones " + EYES[eye]);
+
+      var groups = [
+        {title:"Biometría y queratometría (sintética)", items:FIELDS.filter(function(f){return !f.fict;})},
+        {title:"Campos ficticios", note:"Vacíos a propósito. No representan ninguna medida real.", items:FIELDS.filter(function(f){return f.fict;})}
+      ];
+      groups.forEach(function(g){
+        var t = document.createElement("p"); t.className = "section-title"; t.textContent = g.title; wrap.appendChild(t);
+        var list = document.createElement("div"); list.className = "glass list";
+        g.items.forEach(function(f){ list.appendChild(fieldRow(eye, f)); });
+        wrap.appendChild(list);
+        if (g.note){ var n = document.createElement("p"); n.className = "disclaimer"; n.textContent = g.note; wrap.appendChild(n); }
+      });
+      host.appendChild(wrap);
+    });
+  }
+
+  function fieldRow(eye, f){
+    var id = "f-" + eye + "-" + f.id;
+    var row = document.createElement("div");
+    row.className = "row";
+    var name = document.createElement("div"); name.className = "name";
+    var lab = document.createElement("label"); lab.htmlFor = id; lab.textContent = f.t;
+    if (f.fict){ var tag = document.createElement("span"); tag.className = "fict-tag"; tag.textContent = "ficticio"; lab.appendChild(tag); }
+    name.appendChild(lab);
+    var sm = document.createElement("small"); sm.textContent = EYES[eye]; name.appendChild(sm);
+
+    var val = document.createElement("div"); val.className = "val";
+    var inp = document.createElement("input");
+    inp.type = "text"; inp.id = id; inp.autocomplete = "off"; inp.spellcheck = false;
+    inp.value = state.eyes[eye][f.id] || "";
+    inp.placeholder = f.fict ? "vacío" : "—";
+    if (f.num) inp.inputMode = "decimal";
+    var unit = document.createElement("span"); unit.className = "unit"; unit.textContent = f.u || " ";
+    val.appendChild(inp); val.appendChild(unit);
+
+    var flag = document.createElement("div"); flag.className = "flag"; flag.hidden = true;
+    flag.id = id + "-flag";
+    inp.setAttribute("aria-describedby", flag.id);
+
+    function paint(){
+      var v = inp.value.trim();
+      row.classList.toggle("empty", v === "");
+      var bad = f.num && v !== "" && !isNumeric(v);
+      flag.hidden = !bad;
+      flag.textContent = bad ? "Formato no numérico. Usa cifras, con coma o punto decimal." : "";
+      inp.setAttribute("aria-invalid", bad ? "true" : "false");
+    }
+    inp.addEventListener("input", function(){ state.eyes[eye][f.id] = inp.value; paint(); changed(); });
+    paint();
+
+    row.appendChild(name); row.appendChild(val); row.appendChild(flag);
+    return row;
+  }
+
+  function setEye(eye){
+    currentEye = eye;
+    ["od","oi"].forEach(function(e){
+      document.getElementById("panel-" + e).hidden = e !== eye;
+      document.getElementById("eye-" + e).setAttribute("aria-pressed", e === eye ? "true" : "false");
+    });
+  }
+
+  /* ---------- Vista 3: revisión ---------- */
+  function renderReview(){
+    var pend = computePending();
+    var total = totalItems();
+    var done = total - pend.length;
+
+    var big = document.getElementById("pendCount");
+    big.textContent = pend.length;
+    big.className = "big " + (pend.length ? "some" : "zero");
+    document.getElementById("pendLabel").textContent = pend.length === 1 ? "pendiente" : "pendientes";
+    document.getElementById("progBar").style.width = Math.round(done / total * 100) + "%";
+    document.getElementById("progMeta").textContent = done + " de " + total + " datos completos";
+
+    var badge = document.getElementById("tabBadge");
+    badge.textContent = pend.length; badge.hidden = pend.length === 0;
+
+    var box = document.getElementById("pendBox");
+    box.innerHTML = "";
+    if (!pend.length){
+      var ok = document.createElement("div"); ok.className = "done-msg"; ok.textContent = "No hay pendientes.";
+      box.appendChild(ok);
+    } else {
+      var ul = document.createElement("ul"); ul.className = "pending";
+      pend.forEach(function(p){
+        var li = document.createElement("li");
+        var b = document.createElement("button"); b.type = "button";
+        b.innerHTML = '<span class="dot" aria-hidden="true"></span><span><span class="lbl"></span><br><span class="where"></span></span><span class="go">Ir</span>';
+        b.querySelector(".lbl").textContent = p.label;
+        b.querySelector(".where").textContent = p.where;
+        b.setAttribute("aria-label", "Ir a " + p.label + ", " + p.where);
+        b.addEventListener("click", function(){ jumpTo(p); });
+        li.appendChild(b); ul.appendChild(li);
+      });
+      box.appendChild(ul);
+    }
+
+    var tb = document.getElementById("tableBox");
+    var html = '<table><thead><tr><th scope="col">Medición</th><th scope="col">OD</th><th scope="col">OI</th></tr></thead><tbody>';
+    FIELDS.forEach(function(f){
+      html += "<tr><td>" + esc(f.t) + (f.u ? " (" + esc(f.u) + ")" : "") + "</td>";
+      ["od","oi"].forEach(function(e){
+        var v = (state.eyes[e][f.id] || "").trim();
+        html += v ? "<td>" + esc(v) + "</td>" : '<td class="miss">vacío</td>';
+      });
+      html += "</tr>";
+    });
+    tb.innerHTML = html + "</tbody></table>";
+
+    document.getElementById("summary").value = buildSummary(pend);
+  }
+
+  function buildSummary(pend){
+    var d = new Date().toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+    var L = [];
+    L.push("ANTES DE ELEGIR LA LENTE · resumen");
+    L.push("Datos 100 % sintéticos · sin selección de lente ni umbrales");
+    L.push("Paciente: " + (state.patient || "sin identificador") + " · " + d);
+    L.push("");
+    L.push("PRIORIDADES VISUALES");
+    PRIORITIES.forEach(function(p){ L.push("- " + p.t + ": " + LEVEL_TXT[state.priorities[p.id] || ""]); });
+    if ((state.words || "").trim()) L.push("En sus palabras: “" + state.words.trim() + "”");
+    L.push("");
+    L.push("MEDICIONES (OD | OI)");
+    FIELDS.forEach(function(f){
+      var od = (state.eyes.od[f.id] || "").trim() || "vacío";
+      var oi = (state.eyes.oi[f.id] || "").trim() || "vacío";
+      L.push("- " + f.t + (f.u ? " (" + f.u + ")" : "") + ": " + od + " | " + oi);
+    });
+    L.push("");
+    L.push("PENDIENTES (" + pend.length + ")");
+    if (!pend.length) L.push("- Ninguno");
+    pend.forEach(function(p){ L.push("- " + p.label + " · " + p.where); });
+    if ((state.reviewNote || "").trim()){ L.push(""); L.push("NOTA DE REVISIÓN"); L.push(state.reviewNote.trim()); }
+    L.push("");
+    L.push("Este resumen solo recoge datos. La elección de la lente corresponde al equipo clínico.");
+    return L.join("\n");
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  function jumpTo(p){
+    if (p.kind === "prio"){
+      location.hash = "prioridades";
+      setTimeout(function(){ var el = document.querySelector('input[name="p-' + p.id + '"]:checked') || document.getElementById("p-" + p.id + "-nd"); if (el){ el.focus(); el.closest(".prio").scrollIntoView({block:"center"}); } }, 30);
+    } else {
+      location.hash = "mediciones";
+      setEye(p.eye);
+      setTimeout(function(){ var el = document.getElementById("f-" + p.eye + "-" + p.id); if (el){ el.focus(); el.scrollIntoView({block:"center"}); } }, 30);
+    }
+  }
+
+  /* ---------- Navegación por hash ---------- */
+  var VIEWS = {
+    prioridades:{title:"Prioridades visuales", lead:"Qué quiere conseguir la persona con su visión. Valora cada aspecto según lo que diga ella."},
+    mediciones: {title:"Mediciones por ojo",   lead:"Datos editables de OD y OI. Dos campos ficticios quedan vacíos para practicar la revisión."},
+    revision:   {title:"Revisión",             lead:"Qué falta, cómo queda cada ojo y un resumen listo para copiar."}
+  };
+  function route(){
+    var name = (location.hash || "").replace("#","");
+    if (!VIEWS[name]) name = "prioridades";
+    Object.keys(VIEWS).forEach(function(v){ document.getElementById("view-" + v).hidden = v !== name; });
+    document.querySelectorAll("nav.tabs a").forEach(function(a){
+      if (a.dataset.view === name) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
+    });
+    document.getElementById("viewTitle").textContent = VIEWS[name].title;
+    document.getElementById("viewLead").textContent = VIEWS[name].lead;
+    if (name === "revision") renderReview();
+    window.scrollTo(0,0);
+  }
+
+  function changed(){ save(); renderReview(); }
+
+  /* ---------- Acciones ---------- */
+  document.getElementById("eye-od").addEventListener("click", function(){ setEye("od"); });
+  document.getElementById("eye-oi").addEventListener("click", function(){ setEye("oi"); });
+
+  var pid = document.getElementById("patientId");
+  pid.addEventListener("input", function(){ state.patient = pid.value; changed(); });
+  var words = document.getElementById("words");
+  words.addEventListener("input", function(){ state.words = words.value; changed(); });
+  var note = document.getElementById("reviewNote");
+  note.addEventListener("input", function(){ state.reviewNote = note.value; changed(); });
+
+  var status = document.getElementById("copyStatus");
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var ta = document.getElementById("summary");
+    var text = ta.value;
+    function fallback(){
+      ta.focus(); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch(e){}
+      status.textContent = ok ? "Resumen copiado." : "El navegador no permite copiar. El texto ya está seleccionado: cópialo a mano.";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ status.textContent = "Resumen copiado."; }, fallback);
+    } else fallback();
+  });
+
+  var resetBtn = document.getElementById("resetBtn"), armT = null;
+  resetBtn.addEventListener("click", function(){
+    if (!resetBtn.classList.contains("armed")){
+      resetBtn.classList.add("armed"); resetBtn.textContent = "Pulsa otra vez para borrar cambios";
+      armT = setTimeout(disarm, 3500); return;
+    }
+    clearTimeout(armT); disarm();
+    state = clone(SAMPLE); save(); hydrate();
+    status.textContent = "Ejemplo sintético restablecido.";
+  });
+  function disarm(){ resetBtn.classList.remove("armed"); resetBtn.textContent = "Restablecer ejemplo"; }
+
+  function hydrate(){
+    pid.value = state.patient || "";
+    words.value = state.words || "";
+    note.value = state.reviewNote || "";
+    buildPriorities(); buildEyes(); setEye(currentEye); renderReview();
+  }
+
+  window.addEventListener("hashchange", route);
+  hydrate();
+  route();
+})();
+</script>
+</body>
+</html>
